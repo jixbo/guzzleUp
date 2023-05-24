@@ -121,7 +121,7 @@ const run = async (roomName) => {
     maxNumber = totalCards + totalCards / 8;
     const session = (await client.joinRoom(room)) as Session;
 
-    pollGameState(session, 500, action);
+    pollGameState(session, 1500, action);
 };
 
 const shouldGuzzle = (state: GameState): boolean => {
@@ -133,8 +133,8 @@ const shouldGuzzle = (state: GameState): boolean => {
     const card = state.card;
     const weight = card.value - card.chips;
 
-    let underCard = -1000;
-    let overCard = 1000;
+    let underCard = 3;
+    let overCard = totalCards;
 
     state.guzzlaz.forEach((guzzler) => {
         guzzler.cards.forEach((c) => {
@@ -152,7 +152,7 @@ const shouldGuzzle = (state: GameState): boolean => {
         if (c.value < card.value) {
             underCard = Math.max(myOverCard, c.value);
         } else {
-            overCard = Math.min(overCard, c.value);
+            overCard = Math.min(myUnderCard, c.value);
         }
     });
 
@@ -166,16 +166,21 @@ const shouldGuzzle = (state: GameState): boolean => {
 
     let estimatedWeight = 0;
     const chances = cardsTaken / totalCards;
+
     if (myOverDistance < overDistance) {
-        estimatedWeight = Math.max(((overDistance - 1) * 2 * card.value) / 4, weight) * chances;
+        estimatedWeight = (((myOverDistance - 1) * 2 * weight) / 4) * chances;
+    } else {
+        estimatedWeight = weight * chances;
     }
     if (myUnderDistance < underDistance) {
-        estimatedWeight = Math.max(((overDistance - 1) * 2 * card.value) / 4) * chances;
+        estimatedWeight = (((myUnderDistance - 1) * 2 * weight) / 4) * chances;
+    } else {
+        estimatedWeight = weight * chances;
     }
 
     const needy = 1 / chips;
 
-    return estimatedWeight > maxNumber * needy;
+    return estimatedWeight < maxNumber * needy;
 };
 
 const action = async (sessionId: string, state: GameState) => {
