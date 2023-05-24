@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 interface SessionId {
     sessionId: string;
@@ -14,7 +14,7 @@ interface Guzzler extends Player {
     score: number;
 }
 
-interface You extends Guzzler, SessionId { }
+interface You extends Guzzler, SessionId {}
 
 interface Card {
     value: number;
@@ -41,6 +41,8 @@ interface Error {
 export interface Room {
     roomId: string;
     roomName?: string;
+    cards?: number;
+    chips?: number;
 }
 
 export interface Lobby {
@@ -51,16 +53,16 @@ export interface Session {
     sessionId: string;
 }
 
-interface NewRoom extends Room { }
+interface NewRoom extends Room {}
 
 interface JoinRoomBody extends SessionId {
     name: string;
     roomId?: string;
 }
 
-interface LeaveRoomBody extends SessionId { }
+interface LeaveRoomBody extends SessionId {}
 
-interface StateBody extends SessionId { }
+interface StateBody extends SessionId {}
 
 interface ActionBody extends SessionId {
     guzzle: boolean;
@@ -79,31 +81,22 @@ export class GuzzleAPIClient {
 
     private handleError(error: AxiosError<Error>): void {
         if (error.response) {
-            console.error('Request failed:', error.response.data);
+            console.error("Request failed:", error.response.data);
         } else {
-            console.error('Request failed:', error.message);
+            console.error("Request failed:", error.message);
         }
     }
 
     public peekLobby(): Promise<void | Lobby> {
-        return axios
-            .get<Lobby>(`${this.baseURL}/lobby`)
-            .then(this.handleResponse)
-            .catch(this.handleError);
+        return axios.get<Lobby>(`${this.baseURL}/lobby`).then(this.handleResponse).catch(this.handleError);
     }
 
     public joinRoom(body: Room): Promise<void | Session> {
-        return axios
-            .post<Session>(`${this.baseURL}/room`, body)
-            .then(this.handleResponse)
-            .catch(this.handleError);
+        return axios.post<Session>(`${this.baseURL}/room`, body).then(this.handleResponse).catch(this.handleError);
     }
 
     public getState(body: Session): Promise<void | GameState> {
-        return axios
-            .post<GameState>(`${this.baseURL}/state`, body)
-            .then(this.handleResponse)
-            .catch(this.handleError);
+        return axios.post<GameState>(`${this.baseURL}/state`, body).then(this.handleResponse).catch(this.handleError);
     }
 
     public guzzle(sessionId: string, guzzle: boolean): Promise<void | GameState> {
@@ -112,5 +105,4 @@ export class GuzzleAPIClient {
             .then(this.handleResponse)
             .catch(this.handleError);
     }
-
 }
