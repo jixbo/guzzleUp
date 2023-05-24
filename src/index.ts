@@ -176,12 +176,12 @@ const shouldGuzzle = (state: GameState): boolean => {
     if (myOverDistance < overDistance) {
         console.log("myOverDistance", myOverDistance);
         console.log("overDistance", overDistance);
-        estimatedWeight = (((myOverDistance - 1) * 2 * weight) / 3) * chances;
+        estimatedWeight = (((myOverDistance - 1) * 2 * weight) / 4) * chances;
     } else {
         estimatedWeight = weight;
     }
     if (myUnderDistance < underDistance) {
-        estimatedWeight = (((myUnderDistance - 1) * 2 * weight) / 3) * chances;
+        estimatedWeight = (((myUnderDistance - 1) * 2 * weight) / 4) * chances;
     } else {
         estimatedWeight = weight;
     }
