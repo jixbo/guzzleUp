@@ -87,7 +87,7 @@ function pollGameState(
     client
         .getState(session)
         .then((gameState: void | GameState) => {
-            console.log("Current game state:", JSON.stringify(gameState));
+            // console.log("Current game state:", JSON.stringify(gameState));
             // Process the game state as needed
             if (gameState) {
                 // Call the pollGameState function again after 0.5 seconds
@@ -106,7 +106,6 @@ function pollGameState(
 }
 
 let totalCards;
-let cardsTaken = 0;
 let maxNumber = -1;
 
 const run = async (roomName) => {
@@ -125,14 +124,18 @@ const run = async (roomName) => {
 };
 
 const shouldGuzzle = (state: GameState): boolean => {
+    let cardsTaken = 0;
+
     const chips = state.you.chips;
 
     if (chips === 0) {
         return true;
     }
     const card = state.card;
-    const weight = card.value - card.chips;
+    console.log(card.value);
 
+    const weight = card.value - card.chips;
+    console.log(weight);
     let underCard = 3;
     let overCard = totalCards;
 
@@ -143,6 +146,7 @@ const shouldGuzzle = (state: GameState): boolean => {
             } else {
                 overCard = Math.min(overCard, c.value);
             }
+            cardsTaken++;
         });
     });
 
@@ -154,6 +158,7 @@ const shouldGuzzle = (state: GameState): boolean => {
         } else {
             overCard = Math.min(myUnderCard, c.value);
         }
+        cardsTaken++;
     });
 
     const myUnderDistance = card.value - myUnderCard;
@@ -165,22 +170,29 @@ const shouldGuzzle = (state: GameState): boolean => {
     const overDistance = overCard - card.value;
 
     let estimatedWeight = 0;
-    const chances = cardsTaken / totalCards;
+    console.log("cardsTaken", cardsTaken);
+    const chances = (cardsTaken + 1) / totalCards;
 
     if (myOverDistance < overDistance) {
-        estimatedWeight = (((myOverDistance - 1) * 2 * weight) / 4) * chances;
+        console.log("myOverDistance", myOverDistance);
+        console.log("overDistance", overDistance);
+        estimatedWeight = (((myOverDistance - 1) * 2 * weight) / 3) * chances;
     } else {
-        estimatedWeight = weight * chances;
+        estimatedWeight = weight;
     }
     if (myUnderDistance < underDistance) {
-        estimatedWeight = (((myUnderDistance - 1) * 2 * weight) / 4) * chances;
+        estimatedWeight = (((myUnderDistance - 1) * 2 * weight) / 3) * chances;
     } else {
-        estimatedWeight = weight * chances;
+        estimatedWeight = weight;
     }
 
     const needy = 1 / chips;
-
-    return estimatedWeight < maxNumber * needy;
+    console.log("estimated weight", estimatedWeight);
+    console.log("max number * needy", (maxNumber / 4) * needy);
+    console.log("result", estimatedWeight < (maxNumber / 4) * needy);
+    console.log("card: ", card.value);
+    console.log("/n");
+    return estimatedWeight < (maxNumber / 4) * needy;
 };
 
 const action = async (sessionId: string, state: GameState) => {
