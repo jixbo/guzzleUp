@@ -118,7 +118,7 @@ const run = async (roomName) => {
     totalCards = room.cards;
 
     maxNumber = totalCards + totalCards / 8;
-    const session = (await client.joinRoom(room)) as Session;
+    const session = (await client.joinRoom({...room,name:"Tea Time"})) as Session;
 
     pollGameState(session, 1500, action);
 };

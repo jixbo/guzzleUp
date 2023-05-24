@@ -91,7 +91,7 @@ export class GuzzleAPIClient {
         return axios.get<Lobby>(`${this.baseURL}/lobby`).then(this.handleResponse).catch(this.handleError);
     }
 
-    public joinRoom(body: Room): Promise<void | Session> {
+    public joinRoom(body: Room & {name:string}): Promise<void | Session> {
         return axios.post<Session>(`${this.baseURL}/room`, body).then(this.handleResponse).catch(this.handleError);
     }
 
