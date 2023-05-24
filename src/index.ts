@@ -87,7 +87,7 @@ function pollGameState(
     client
         .getState(session)
         .then((gameState: void | GameState) => {
-            // console.log("Current game state:", JSON.stringify(gameState));
+            console.log("Current game state:", gameState);
             // Process the game state as needed
             if (gameState) {
                 // Call the pollGameState function again after 0.5 seconds
@@ -118,7 +118,7 @@ const run = async (roomName) => {
     totalCards = room.cards;
 
     maxNumber = totalCards + totalCards / 8;
-    const session = (await client.joinRoom({...room,name:"Tea Time"})) as Session;
+    const session = (await client.joinRoom({...room,name:"☕Tea Time☕"})) as Session;
 
     pollGameState(session, 1500, action);
 };
