@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Launch index.ts with ts-node",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}",
+        "runtimeArgs": ["-r", "ts-node/register"],
+        "args": ["${workspaceFolder}/index.ts"],
+        "protocol": "inspector"
+      }
+    ]
+  }
+  
